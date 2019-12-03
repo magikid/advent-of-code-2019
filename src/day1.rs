@@ -1,12 +1,10 @@
 use std::fs;
 
 pub fn p1() -> i32 {
-    let final_weight = get_weights()
+    get_weights()
         .into_iter()
         .map(|weight| fuel_requirement(weight as f32))
-        .sum();
-
-    return final_weight;
+        .sum()
 }
 
 pub fn p2() -> i32 {
@@ -18,19 +16,19 @@ pub fn p2() -> i32 {
         final_fuel_weights.push(fuel_weight);
     }
 
-    return final_fuel_weights.iter().sum();
+    final_fuel_weights.iter().sum()
 }
 
-fn get_weights<'a>() -> Vec<i32> {
-    return fs::read_to_string("inputs/d1p1.txt")
+fn get_weights() -> Vec<i32> {
+    fs::read_to_string("inputs/d1p1.txt")
         .expect("Something went wrong reading the file")
         .split_whitespace()
         .map(|s| parse_num(s))
-        .collect::<Vec<_>>();
+        .collect::<Vec<_>>()
 }
 
 fn fuel_requirement(weight: f32) -> i32 {
-    return (weight / 3.0).floor() as i32 - 2;
+    (weight / 3.0).floor() as i32 - 2
 }
 
 fn total_fuel_requirement(weight: f32) -> i32 {
@@ -44,11 +42,11 @@ fn total_fuel_requirement(weight: f32) -> i32 {
         prev_fuel = new_fuel;
     }
 
-    return fuel_weights.iter().sum();
+    fuel_weights.iter().sum()
 }
 
 fn parse_num(l: &str) -> i32 {
-    return l.parse().unwrap();
+    l.parse().unwrap()
 }
 
 #[cfg(test)]
@@ -78,7 +76,7 @@ mod tests {
 
     #[test]
     fn test_bigger_fuel_requirement() {
-        let weight = 100756.0;
+        let weight = 100_756.0;
         let fuel = fuel_requirement(weight);
         assert_eq!(33583, fuel);
     }
@@ -99,7 +97,7 @@ mod tests {
 
     #[test]
     fn test_bigger_total_fuel_requirement() {
-        let weight = 100756.0;
+        let weight = 100_756.0;
         let fuel = total_fuel_requirement(weight);
         assert_eq!(50346, fuel);
     }

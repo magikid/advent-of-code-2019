@@ -1,6 +1,6 @@
 pub fn p1() -> String {
     let input = program_input_generator(12, 2);
-    return ship_compute(input.as_str())[0].to_string();
+    ship_compute(input.as_str())[0].to_string()
 }
 
 pub fn p2() -> String {
@@ -20,7 +20,7 @@ pub fn p2() -> String {
         }
     }
 
-    return (100 * found_noun + found_verb).to_string();
+    (100 * found_noun + found_verb).to_string()
 }
 
 fn program_input_generator(noun: i32, verb: i32) -> String {
@@ -30,7 +30,7 @@ fn program_input_generator(noun: i32, verb: i32) -> String {
 fn ship_compute(program: &str) -> Vec<String> {
     let mut current_position = 0;
     let mut program_instructions = program
-        .split(",")
+        .split(',')
         .map(|num| num.parse().unwrap())
         .collect::<Vec<_>>();
 
