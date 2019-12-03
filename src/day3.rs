@@ -48,7 +48,6 @@ fn closest_intersection(first_wire_path: &str, second_wire_path: &str) -> i32 {
         if current_distance < shortest_distance {
             shortest_distance = current_distance;
         }
-        println!("intersection: {:?}, current_distance: {:?}, shortest_distance: {:?}", intersection, current_distance, shortest_distance);
     }
 
     shortest_distance
