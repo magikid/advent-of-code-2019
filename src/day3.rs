@@ -17,14 +17,14 @@ struct MovementInstruction {
     steps: i32,
 }
 
-#[derive(Debug, PartialEq, Eq, Hash, Clone, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone, PartialOrd, Ord, Copy)]
 struct PathPoint {
     y: i32,
     x: i32,
 }
 
 impl PathPoint {
-    fn manhattan_distance_from_origin(&self) -> i32 {
+    fn manhattan_distance_from_origin(self) -> i32 {
         self.x.abs() + self.y.abs()
     }
 }
@@ -40,9 +40,10 @@ pub fn p2() -> String {
 fn closest_intersection(first_wire_path: &str, second_wire_path: &str) -> i32 {
     let first_wire_points = wire_points(first_wire_path);
     let second_wire_points = wire_points(second_wire_path);
-    let intersections = wire_intersections(first_wire_points, second_wire_points);
+    let intersections = wire_intersections(&first_wire_points, &second_wire_points);
     let mut shortest_distance = 1_000_000;
 
+    println!("intersections: {:?}", intersections);
     for intersection in intersections {
         let current_distance = intersection.manhattan_distance_from_origin();
         if current_distance < shortest_distance {
@@ -53,7 +54,28 @@ fn closest_intersection(first_wire_path: &str, second_wire_path: &str) -> i32 {
     shortest_distance
 }
 
-fn wire_intersections(first_wire_points: Vec<PathPoint>, second_wire_points: Vec<PathPoint>) -> Vec<PathPoint> {
+fn shortest_delay(first_wire_path: &str, second_wire_path: &str) -> i32 {
+    let first_wire_points = wire_points(first_wire_path);
+    let second_wire_points = wire_points(second_wire_path);
+    let intersections = wire_intersections(&first_wire_points, &second_wire_points);
+    let mut first_wire_distance = 0;
+    let mut second_wire_distance = 0;
+    let mut shortest_delay = 1_000_000;
+
+    for first_wire_point in first_wire_points {
+        first_wire_distance += 1;
+        for second_wire_point in &second_wire_points {
+            second_wire_distance += 1;
+            if intersections.contains(&first_wire_point) && intersections.contains(&second_wire_point) {
+                println!("Found collision! {:?}, delay: {:?}", first_wire_point, first_wire_distance + second_wire_distance);
+            }
+        }
+    }
+
+    0
+}
+
+fn wire_intersections(first_wire_points: &Vec<PathPoint>, second_wire_points: &Vec<PathPoint>) -> Vec<PathPoint> {
     let first_wire_set: HashSet<PathPoint> = first_wire_points.iter().cloned().collect();
     let second_wire_set: HashSet<PathPoint> = second_wire_points.iter().cloned().collect();
 
@@ -219,8 +241,24 @@ mod tests {
         let second_wire_points = wire_points("U62,R66,U55,R34,D71,R55,D58,R83");
         let mut expected_output = vec![PathPoint{x: 146, y: 46}, PathPoint{x: 158, y: -12}, PathPoint{x: 155, y: 11}, PathPoint{x: 155, y: 4}];
         expected_output.sort();
-        let mut calculated_output = wire_intersections(first_wire_points, second_wire_points);
+        let mut calculated_output = wire_intersections(&first_wire_points, &second_wire_points);
         calculated_output.sort();
         assert_eq!(expected_output, calculated_output);
+    }
+
+    #[test]
+    fn test_short_wire_1() {
+        let first_wire_points = "R75,D30,R83,U83,L12,D49,R71,U7,L72";
+        let second_wire_points = "U62,R66,U55,R34,D71,R55,D58,R83";
+        let expected_output = 610;
+        assert_eq!(expected_output, shortest_delay(first_wire_points, second_wire_points));
+    }
+
+    #[test]
+    fn test_short_wire_2() {
+        let first_wire_points = "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51";
+        let second_wire_points = "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7";
+        let expected_output = 410;
+        assert_eq!(expected_output, shortest_delay(first_wire_points, second_wire_points));
     }
 }
