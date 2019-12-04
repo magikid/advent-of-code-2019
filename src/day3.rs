@@ -34,7 +34,7 @@ pub fn p1() -> String {
 }
 
 pub fn p2() -> String {
-    "p2".to_string()
+    shortest_delay(D3P1_WIRE_1, D3P1_WIRE_2).to_string()
 }
 
 fn closest_intersection(first_wire_path: &str, second_wire_path: &str) -> i32 {
@@ -43,7 +43,7 @@ fn closest_intersection(first_wire_path: &str, second_wire_path: &str) -> i32 {
     let intersections = wire_intersections(&first_wire_points, &second_wire_points);
     let mut shortest_distance = 1_000_000;
 
-    println!("intersections: {:?}", intersections);
+    //println!("intersections: {:?}", intersections);
     for intersection in intersections {
         let current_distance = intersection.manhattan_distance_from_origin();
         if current_distance < shortest_distance {
@@ -54,25 +54,27 @@ fn closest_intersection(first_wire_path: &str, second_wire_path: &str) -> i32 {
     shortest_distance
 }
 
-fn shortest_delay(first_wire_path: &str, second_wire_path: &str) -> i32 {
+fn shortest_delay(first_wire_path: &str, second_wire_path: &str) -> usize {
     let first_wire_points = wire_points(first_wire_path);
     let second_wire_points = wire_points(second_wire_path);
     let intersections = wire_intersections(&first_wire_points, &second_wire_points);
-    let mut first_wire_distance = 0;
-    let mut second_wire_distance = 0;
-    let mut shortest_delay = 1_000_000;
+    let mut max_delay = 1_000_000;
 
-    for first_wire_point in first_wire_points {
-        first_wire_distance += 1;
-        for second_wire_point in &second_wire_points {
-            second_wire_distance += 1;
-            if intersections.contains(&first_wire_point) && intersections.contains(&second_wire_point) {
-                println!("Found collision! {:?}, delay: {:?}", first_wire_point, first_wire_distance + second_wire_distance);
-            }
+    for (i, intersection) in intersections.iter().enumerate() {
+        let first_wire_intersection = first_wire_points.iter().position(|point| point == intersection);
+        let second_wire_intersection = second_wire_points.iter().position(|point| point == intersection);
+
+        let first_counter = first_wire_intersection.unwrap_or(0);
+        let second_counter = second_wire_intersection.unwrap_or(0);
+
+        if (first_counter + second_counter) < max_delay {
+            max_delay = first_counter + second_counter + 2;
         }
+
+        //println!("Found collision! first dist: {:?}, second dist: {:?}, total: {:?}, max_delay: {:?}", first_counter, second_counter, first_counter + second_counter, max_delay);
     }
 
-    0
+    max_delay
 }
 
 fn wire_intersections(first_wire_points: &Vec<PathPoint>, second_wire_points: &Vec<PathPoint>) -> Vec<PathPoint> {
