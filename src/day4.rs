@@ -65,24 +65,28 @@ fn valid_password_p2(password: String, testing: bool) -> bool {
         return false
     }
 
-    let mut double_numbers = false;
-    let mut multiples = false;
+    let multiples = more_than_two(&password);
+    let double_numbers = exactly_two(&password);
     for i in 0..letter_count {
-        if i == 0 || i == 1{
+        if i == 0 {
             continue
         }
 
         if decreasing(&password, i) {
             return false
         }
+    }
 
-        multiples = more_than_two(&password);
-        double_numbers = exactly_two(&password);
+    if !double_numbers {
+        return false
     }
 
     if !double_numbers && multiples {
         return false
     }
+
+    // double_numbers == true
+    // multples == false
 
     true
 }
