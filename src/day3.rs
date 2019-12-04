@@ -60,7 +60,7 @@ fn shortest_delay(first_wire_path: &str, second_wire_path: &str) -> usize {
     let intersections = wire_intersections(&first_wire_points, &second_wire_points);
     let mut max_delay = 1_000_000;
 
-    for (i, intersection) in intersections.iter().enumerate() {
+    for (_, intersection) in intersections.iter().enumerate() {
         let first_wire_intersection = first_wire_points.iter().position(|point| point == intersection);
         let second_wire_intersection = second_wire_points.iter().position(|point| point == intersection);
 
