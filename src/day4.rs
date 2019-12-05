@@ -25,21 +25,21 @@ fn valid_password_p1(password: String, testing: bool) -> bool {
     let letter_count = password.chars().count();
     let numeric_password: i32 = password.parse().unwrap();
     if letter_count != 6 {
-        return false
+        return false;
     }
 
     if outside_range(numeric_password) && !testing {
-        return false
+        return false;
     }
 
     let mut double_numbers = false;
     for i in 0..letter_count {
         if i == 0 {
-            continue
+            continue;
         }
 
         if decreasing(&password, i) {
-            return false
+            return false;
         }
 
         if matches_last(&password, i) {
@@ -48,7 +48,7 @@ fn valid_password_p1(password: String, testing: bool) -> bool {
     }
 
     if !double_numbers {
-        return false
+        return false;
     }
 
     true
@@ -58,31 +58,31 @@ fn valid_password_p2(password: String, testing: bool) -> bool {
     let letter_count = password.chars().count();
     let numeric_password: i32 = password.parse().unwrap();
     if letter_count != 6 {
-        return false
+        return false;
     }
 
     if outside_range(numeric_password) && !testing {
-        return false
+        return false;
     }
 
     let multiples = more_than_two(&password);
     let double_numbers = exactly_two(&password);
     for i in 0..letter_count {
         if i == 0 {
-            continue
+            continue;
         }
 
         if decreasing(&password, i) {
-            return false
+            return false;
         }
     }
 
     if !double_numbers {
-        return false
+        return false;
     }
 
     if !double_numbers && multiples {
-        return false
+        return false;
     }
 
     // double_numbers == true
@@ -93,16 +93,16 @@ fn valid_password_p2(password: String, testing: bool) -> bool {
 
 fn decreasing(password: &str, i: usize) -> bool {
     if i < 1 {
-        return true
+        return true;
     }
-    password.chars().nth(i) < password.chars().nth(i-1)
+    password.chars().nth(i) < password.chars().nth(i - 1)
 }
 
 fn matches_last(password: &str, i: usize) -> bool {
     if i < 1 {
-        return true
+        return true;
     }
-    password.chars().nth(i) == password.chars().nth(i-1)
+    password.chars().nth(i) == password.chars().nth(i - 1)
 }
 
 fn outside_range(password: i32) -> bool {
@@ -113,24 +113,34 @@ fn more_than_two(password: &str) -> bool {
     password
         .chars()
         .map(|c| (c, 1))
-        .coalesce(|(c, n), (d, m)|
-            if c == d { Ok((c, n + m)) } else { Err(((c, n), (d, m))) }
-        )
-        .filter(|(_, n)| n > &2 )
+        .coalesce(|(c, n), (d, m)| {
+            if c == d {
+                Ok((c, n + m))
+            } else {
+                Err(((c, n), (d, m)))
+            }
+        })
+        .filter(|(_, n)| n > &2)
         .map(|(c, _)| c)
-        .count() > 0
+        .count()
+        > 0
 }
 
 fn exactly_two(password: &str) -> bool {
     password
         .chars()
         .map(|c| (c, 1))
-        .coalesce(|(c, n), (d, m)|
-            if c == d { Ok((c, n + m)) } else { Err(((c, n), (d, m))) }
-        )
+        .coalesce(|(c, n), (d, m)| {
+            if c == d {
+                Ok((c, n + m))
+            } else {
+                Err(((c, n), (d, m)))
+            }
+        })
         .filter(|(_, n)| n == &2)
         .map(|(c, _)| c)
-        .count() >= 1
+        .count()
+        >= 1
 }
 
 #[cfg(test)]
@@ -171,5 +181,15 @@ mod tests {
     fn test_password_p2_quad_1_double_2() {
         let password = "111122".to_string();
         assert_eq!(true, valid_password_p2(password, true));
+    }
+
+    #[test]
+    fn test_day4_p1() {
+        assert_eq!(p1(), "1716")
+    }
+
+    #[test]
+    fn test_day4_p2() {
+        assert_eq!(p2(), "1163")
     }
 }

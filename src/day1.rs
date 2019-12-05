@@ -101,4 +101,14 @@ mod tests {
         let fuel = total_fuel_requirement(weight);
         assert_eq!(50346, fuel);
     }
+
+    #[test]
+    fn test_day1_part1() {
+        assert_eq!(p1(), 3_296_269)
+    }
+
+    #[test]
+    fn test_day1_part2() {
+        assert_eq!(p2(), 4_941_547)
+    }
 }
