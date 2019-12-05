@@ -12,8 +12,18 @@ pub fn p2() -> String {
 mod tests {
     use super::*;
 
+    fn init() {
+        let _ = env_logger::builder()
+            .filter(None, log::LevelFilter::Trace)
+            .is_test(true)
+            .try_init();
+    }
+
     #[test]
-    fn test_password_all_ones() {
-        assert_eq!(true, true);
+    fn test_computer_immediate_mode() {
+        init();
+        let instructions = "1002,4,3,4,33";
+        let expected_output = ship_computer::compute(instructions).join(",");
+        assert_eq!("99", expected_output);
     }
 }
