@@ -1,8 +1,9 @@
 extern crate env_logger;
-#[macro_use] extern crate log;
+#[macro_use]
+extern crate log;
 
-use std::env;
 use env_logger::Env;
+use std::env;
 
 mod day1;
 mod day2;

@@ -19,7 +19,11 @@ impl Program {
     }
 
     fn from(instructions: Vec<i32>) -> Program {
-        Program{instructions, position: 0, output: String::from("")}
+        Program {
+            instructions,
+            position: 0,
+            output: String::from(""),
+        }
     }
 }
 
@@ -36,7 +40,6 @@ pub fn compute(program: &str) -> Program {
         let next_instruction: &i32 = &program.instructions[program.position];
 
         match next_instruction {
-
             1 => {
                 let first_argument = get_argument(&program, 1);
                 let second_argument = get_argument(&program, 2);
@@ -58,7 +61,10 @@ pub fn compute(program: &str) -> Program {
             3 => {
                 let output_placement = get_argument(&program, 1);
                 let input = get_input();
-                debug!("Writing input {:?} to location {:?}", input, output_placement);
+                debug!(
+                    "Writing input {:?} to location {:?}",
+                    input, output_placement
+                );
                 program.advance_position(2);
             }
 
@@ -70,7 +76,8 @@ pub fn compute(program: &str) -> Program {
 
             99 => {
                 info!("{}", output);
-                return program.instructions
+                return program
+                    .instructions
                     .iter()
                     .map(|num| num.to_string())
                     .collect::<Vec<_>>();
@@ -86,7 +93,8 @@ pub fn compute(program: &str) -> Program {
 }
 
 fn get_argument(program: &Program, argument_offset: usize) -> i32 {
-    let argument_position: usize = program.instructions[program.position + argument_offset] as usize;
+    let argument_position: usize =
+        program.instructions[program.position + argument_offset] as usize;
     if argument_position > program.instructions.len() {
         panic!("oops");
     }
