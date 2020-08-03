@@ -20,6 +20,15 @@ mod tests {
     }
 
     #[test]
+    fn test_computer_output() {
+        init();
+        let instructions = "4,2,99";
+        let computer = ship_computer::compute(instructions);
+        let computed_output = computer.get_output();
+        assert_eq!("output 99\n", computed_output);
+    }
+
+    #[test]
     fn test_computer_immediate_mode() {
         init();
         let instructions = "1002,4,3,4,33";

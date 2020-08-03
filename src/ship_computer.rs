@@ -1,6 +1,6 @@
-#[derive(Debug)]
-struct Program {
-    instructions: Vec<i32>,
+#[derive(Debug, Clone)]
+pub struct Program {
+    pub instructions: Vec<i32>,
     position: usize,
     output: String,
 }
@@ -14,8 +14,8 @@ impl Program {
         println!("{}", self.output)
     }
 
-    fn get_output(&self) -> String {
-        self.output.clone()
+    pub fn get_output(&self) -> &str {
+        self.output.as_str()
     }
 
     fn from(instructions: Vec<i32>) -> Program {
@@ -25,6 +25,23 @@ impl Program {
             output: String::from(""),
         }
     }
+
+    pub fn join(&self, joiner: &str) -> String {
+        self.instructions
+            .iter()
+            .map(|s| s.to_string())
+            .collect::<Vec<_>>()
+            .join(joiner)
+    }
+
+    fn next_instruction(&self) -> i32 {
+        let combined_opcode_and_parameter_modes = self.instructions[self.position];
+        let combined_length = combined_opcode_and_parameter_modes
+            .to_string()
+            .chars()
+            .collect::<Vec<_>>()
+            .len();
+    }
 }
 
 pub fn compute(program: &str) -> Program {
@@ -33,11 +50,10 @@ pub fn compute(program: &str) -> Program {
         .map(|num| num.parse().unwrap())
         .collect::<Vec<_>>();
     let mut program = Program::from(program_instructions);
-    let mut output = String::from("");
     trace!("initial program: {:?}", program);
 
     loop {
-        let next_instruction: &i32 = &program.instructions[program.position];
+        let next_instruction: i32 = program.next_instruction();
 
         match next_instruction {
             1 => {
@@ -70,17 +86,16 @@ pub fn compute(program: &str) -> Program {
 
             4 => {
                 let value_to_output = get_argument(&program, 1);
-                output.push_str(format!("output {:?}\n", value_to_output).as_str());
+                program
+                    .output
+                    .push_str(format!("output {:?}\n", value_to_output).as_str());
+                program.print_output();
                 program.advance_position(2);
             }
 
             99 => {
-                info!("{}", output);
-                return program
-                    .instructions
-                    .iter()
-                    .map(|num| num.to_string())
-                    .collect::<Vec<_>>();
+                info!("{}", program.output);
+                return program;
             }
 
             _ => panic!("opcode not defined"),

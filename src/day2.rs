@@ -2,7 +2,7 @@ use super::ship_computer;
 
 pub fn p1() -> String {
     let input = program_input_generator(12, 2);
-    ship_computer::compute(input.as_str())[0].to_string()
+    ship_computer::compute(input.as_str()).instructions[0].to_string()
 }
 
 pub fn p2() -> String {
@@ -12,9 +12,9 @@ pub fn p2() -> String {
     for i in 0..=99 {
         for j in 0..=99 {
             let next_input = program_input_generator(i, j);
-            let comptued_value = &ship_computer::compute(next_input.as_str())[0];
+            let comptued_value = &ship_computer::compute(next_input.as_str()).instructions[0];
 
-            if comptued_value == "19690720" {
+            if comptued_value == &19_690_720 {
                 found_noun = i;
                 found_verb = j;
                 println!("found noun: {:?}, verb: {:?}", found_noun, found_verb);
@@ -69,8 +69,8 @@ mod tests {
     #[test]
     fn test_computer_d2p1() {
         let input = program_input_generator(12, 2);
-        let calculated_output = &ship_computer::compute(input.as_str())[0];
-        let expected_output = "3654868";
+        let calculated_output = &ship_computer::compute(input.as_str()).instructions[0];
+        let expected_output = &3_654_868;
         assert_eq!(expected_output, calculated_output);
     }
 
